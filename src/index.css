@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Surfaces */
+  --color-app: #0A0A08;
+  --color-surface: #131310;
+  --color-surface-raised: #191916;
+  --color-ink: #0A0A08;
+
+  /* Text */
+  --color-primary: #F5F4EF;
+  --color-secondary: #A6A59B;
+  --color-muted: #6E6D64;
+
+  /* Structure */
+  --color-line: #f5f4ef17;
+  --color-line-strong: #f5f4ef29;
+
+  /* Accent */
+  --color-accent: #22C55E;
+  --color-accent-bright: #4ADE80;
+  --color-glow: #22c55e29;
+  --color-danger: #F87171;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  @apply bg-app text-primary font-body antialiased;
+}
+
+::selection {
+  @apply bg-accent;
+  color: #0A0A08;
+}
+
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-accent rounded-[2px];
+}
+
+.container-ww {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container-ww {
+    padding-inline: 2.5rem;
+  }
+}
+
+.bg-grid-fade {
+  background-image:
+    linear-gradient(to right, var(--color-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 0%, black 45%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 0%, black 45%, transparent 100%);
+}
+
+.spotlight {
+  background: radial-gradient(480px circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklab, var(--color-accent) 14%, transparent), transparent 70%);
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}

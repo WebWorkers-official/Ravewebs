@@ -1,0 +1,10 @@
+<svg width="220" height="40" viewBox="0 0 220 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RaveWebs logo">
+  <title>RaveWebs</title>
+  <g>
+    <rect x="0" y="8" width="8" height="8" rx="2" fill="#16A34A"/>
+    <rect x="11" y="8" width="8" height="8" rx="2" fill="#22C55E" opacity="0.55"/>
+    <rect x="0" y="19" width="8" height="8" rx="2" fill="#14140F"/>
+    <path d="M2 27 L15 4" stroke="#16A34A" stroke-width="1" opacity="0.35"/>
+  </g>
+  <text x="30" y="27" font-family="'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" font-weight="700" font-size="19" letter-spacing="0.2" fill="#14140F">RaveWebs</text>
+</svg>
