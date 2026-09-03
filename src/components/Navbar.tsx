@@ -32,8 +32,16 @@ export function Navbar() {
 
   const handleNavClick = (href: string) => (e: React.MouseEvent) => {
     e.preventDefault()
-    setMenuOpen(false)
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+    if (menuOpen) {
+      // Close the menu first, then wait for it to fully close & unlock scroll
+      setMenuOpen(false)
+      setTimeout(() => {
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100) // 100ms ensures the body overflow is reset and menu has unmounted
+    } else {
+      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
   }
 
   return (
@@ -52,15 +60,18 @@ export function Navbar() {
             <Logo />
           </a>
 
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8" aria-label="Primary">
             {links.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={handleNavClick(link.href)}
-                className="text-sm font-medium text-secondary transition-colors hover:text-primary"
+                className="group relative text-sm font-medium text-secondary transition-colors hover:text-primary"
               >
                 {link.label}
+                {/* Subtle underline glow effect for desktop */}
+                <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-accent transition-all duration-300 group-hover:w-full" />
               </a>
             ))}
           </nav>
@@ -71,13 +82,14 @@ export function Navbar() {
             </Button>
           </div>
 
+          {/* Mobile Hamburger */}
           <div className="flex items-center gap-2 lg:hidden">
             <button
               type="button"
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((o) => !o)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-line text-primary"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-line text-primary transition-colors hover:border-accent/50 hover:text-accent"
             >
               {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
@@ -85,6 +97,7 @@ export function Navbar() {
         </div>
       </div>
 
+      {/* Mobile Menu with Premium Glass Effect & Staggered Links */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -95,27 +108,48 @@ export function Navbar() {
             className="lg:hidden overflow-hidden"
           >
             <div className="container-ww pt-3">
-              <div className="flex flex-col gap-1 rounded-2xl border border-line bg-surface p-4">
-                {links.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={handleNavClick(link.href)}
-                    className="rounded-lg px-3 py-3 text-base font-medium text-secondary transition-colors hover:bg-app hover:text-primary"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-                <Button
-                  as="a"
-                  href="#contact"
-                  onClick={handleNavClick('#contact')}
-                  variant="primary"
-                  className="mt-2 justify-center"
-                  icon={<ArrowUpRight size={15} />}
+              <div className="relative overflow-hidden rounded-2xl border border-line bg-surface/90 backdrop-blur-xl shadow-2xl p-4">
+                {/* Top gradient line for premium look */}
+                <div className="absolute left-0 right-0 top-0 h-0.5 bg-linear-to-r from-transparent via-accent/40 to-transparent" />
+
+                <div className="flex flex-col gap-1">
+                  {links.map((link, i) => (
+                    <motion.a
+                      key={link.href}
+                      href={link.href}
+                      onClick={handleNavClick(link.href)}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 + i * 0.05, duration: 0.3 }}
+                      className="rounded-lg px-3 py-3 text-base font-medium text-secondary transition-colors hover:bg-app hover:text-primary"
+                    >
+                      {link.label}
+                    </motion.a>
+                  ))}
+                </div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.35, duration: 0.3 }}
+                  className="mt-3"
                 >
-                  Start a Project
-                </Button>
+                  <Button
+                    as="a"
+                    href="#contact"
+                    onClick={handleNavClick('#contact')}
+                    variant="primary"
+                    className="w-full justify-center"
+                    icon={<ArrowUpRight size={15} />}
+                  >
+                    Start a Project
+                  </Button>
+                </motion.div>
+
+                {/* Mobile Security footer */}
+                <p className="mt-4 pb-1 text-center font-mono text-[10px] uppercase tracking-widest text-muted">
+                  RaveWebs — Digital & AI Automation
+                </p>
               </div>
             </div>
           </motion.div>
