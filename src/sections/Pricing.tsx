@@ -26,19 +26,29 @@ export function Pricing() {
     return () => window.removeEventListener('resize', checkScrollPosition)
   }, [])
 
+  // Dynamically calculate the exact scroll width (card width + gap)
+  const getScrollAmount = () => {
+    const container = scrollContainerRef.current
+    if (!container) return 320
+    const card = container.querySelector<HTMLElement>('[data-pricing-card]')
+    if (!card) return 320
+    const gap = window.innerWidth >= 768 ? 24 : 16 // md:gap-6 (24px) or gap-4 (16px)
+    return card.offsetWidth + gap
+  }
+
   const scrollToPrev = () => {
-    scrollContainerRef.current?.scrollBy({ left: -320, behavior: 'smooth' })
+    scrollContainerRef.current?.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' })
   }
 
   const scrollToNext = () => {
-    scrollContainerRef.current?.scrollBy({ left: 320, behavior: 'smooth' })
+    scrollContainerRef.current?.scrollBy({ left: getScrollAmount(), behavior: 'smooth' })
   }
 
   return (
-    <section id="pricing" className="relative overflow-hidden py-20 md:py-28">
+    <section id="pricing" className="relative overflow-hidden py-16 md:py-28">
       {/* Ambient Glow behind the carousel */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute right-0 top-1/2 h-400px w-600px -translate-y-1/2 rounded-full bg-accent/10 blur-[100px]" />
+        <div className="absolute right-0 top-1/2 h-[300px] w-[400px] -translate-y-1/2 rounded-full bg-accent/10 blur-[80px] md:h-[400px] md:w-[600px] md:blur-[100px]" />
       </div>
 
       <div className="container-ww">
@@ -49,16 +59,16 @@ export function Pricing() {
         />
 
         {/* Horizontal Carousel Wrapper with Arrows */}
-        <div className="relative mt-16">
+        <div className="relative mt-10 md:mt-16">
           
           {/* Left Arrow */}
           {canScrollLeft && (
             <button
               onClick={scrollToPrev}
-              className="absolute -left-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-app text-primary shadow-xl transition-all duration-300 hover:border-accent hover:text-accent hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] lg:-left-6"
+              className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-app text-primary shadow-xl transition-all duration-300 hover:border-accent hover:text-accent hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] md:-left-6 md:h-11 md:w-11"
               aria-label="Previous pricing plans"
             >
-              <ArrowLeft size={18} />
+              <ArrowLeft size={16} className="md:size-18" />
             </button>
           )}
 
@@ -66,18 +76,18 @@ export function Pricing() {
           {canScrollRight && (
             <button
               onClick={scrollToNext}
-              className="absolute -right-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-app text-primary shadow-xl transition-all duration-300 hover:border-accent hover:text-accent hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] lg:-right-6"
+              className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-app text-primary shadow-xl transition-all duration-300 hover:border-accent hover:text-accent hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] md:-right-6 md:h-11 md:w-11"
               aria-label="Next pricing plans"
             >
-              <ArrowRight size={18} />
+              <ArrowRight size={16} className="md:size-18" />
             </button>
           )}
 
-          {/* Scroll Container */}
+          {/* Scroll Container - Full phone width cards */}
           <div 
             ref={scrollContainerRef}
             onScroll={checkScrollPosition}
-            className="flex snap-x snap-mandatory gap-6 overflow-x-auto px-1 pt-6 pb-12 scroll-smooth"
+            className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-10 pt-6 scroll-px-1 md:gap-6 md:pb-12"
             style={{ 
               scrollbarWidth: 'none', // Firefox
               msOverflowStyle: 'none' // IE/Edge
@@ -89,15 +99,16 @@ export function Pricing() {
               }
             `}</style>
 
-            <div id="pricing-carousel" className="flex snap-x snap-mandatory gap-6">
+            <div id="pricing-carousel" className="flex snap-x snap-mandatory gap-4 md:gap-6">
               {pricingPlans.map((plan, i) => (
                 <motion.div
                   key={plan.id}
+                  data-pricing-card
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-60px' }}
                   transition={{ duration: 0.55, delay: i * 0.08, ease: 'easeOut' }}
-                  className="relative flex w-[85%] shrink-0 snap-center flex-col justify-between rounded-3xl border border-line bg-surface p-8 transition-all duration-300 hover:-translate-y-2 hover:border-accent/40 hover:shadow-[0_20px_50px_-15px_rgba(34,197,94,0.15)] sm:w-[55%] lg:w-[32%]"
+                  className="relative flex w-full shrink-0 snap-center flex-col justify-between rounded-3xl border border-line bg-surface p-6 transition-all duration-300 hover:-translate-y-2 hover:border-accent/40 hover:shadow-[0_20px_50px_-15px_rgba(34,197,94,0.15)] sm:w-[60%] md:p-8 lg:w-[32%]"
                 >
                   {/* Top Section */}
                   <div>
@@ -109,7 +120,7 @@ export function Pricing() {
                   </div>
 
                   {/* Price Section */}
-                  <div className="my-8 border-y border-line py-6">
+                  <div className="my-6 border-y border-line py-6 md:my-8">
                     <p className="font-display text-3xl font-bold text-primary">
                       {plan.monthly}
                       <span className="text-base font-normal text-muted">/mo</span>
@@ -133,7 +144,7 @@ export function Pricing() {
 
                   {/* CTA Button */}
                   <button
-                    className="group/btn mt-10 flex w-full items-center justify-center gap-2 rounded-xl border border-line py-3.5 text-sm font-semibold text-primary transition-all duration-300 hover:border-accent hover:bg-accent/5 hover:text-accent"
+                    className="group/btn mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-line py-3.5 text-sm font-semibold text-primary transition-all duration-300 hover:border-accent hover:bg-accent/5 hover:text-accent md:mt-10"
                   >
                     Get Started
                     <ArrowUpRight size={16} className="transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
@@ -143,20 +154,20 @@ export function Pricing() {
             </div>
           </div>
 
-          {/* Right Edge Fade (Signals more content) */}
+          {/* Right Edge Fade */}
           {canScrollRight && (
-            <div className="pointer-events-none absolute right-0 top-6 bottom-12 w-16 bg-linear-to-l from-app to-transparent lg:w-32" />
+            <div className="pointer-events-none absolute right-0 top-6 bottom-10 w-10 bg-linear-to-l from-app to-transparent md:bottom-12 md:w-16 lg:w-32" />
           )}
           
-          {/* Left Edge Fade (Signals previous content) */}
+          {/* Left Edge Fade */}
           {canScrollLeft && (
-            <div className="pointer-events-none absolute left-0 top-6 bottom-12 w-16 bg-linear-to-r from-app to-transparent lg:w-32" />
+            <div className="pointer-events-none absolute left-0 top-6 bottom-10 w-10 bg-linear-to-r from-app to-transparent md:bottom-12 md:w-16 lg:w-32" />
           )}
 
         </div>
 
         {/* Hint for mobile users */}
-        <p className="mt-2 text-center font-mono text-xs text-muted lg:hidden">
+        <p className="mt-4 text-center font-mono text-xs text-muted lg:hidden">
           Swipe or drag to see more plans →
         </p>
       </div>

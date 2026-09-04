@@ -25,20 +25,30 @@ export function Services() {
     return () => window.removeEventListener('resize', checkScrollPosition)
   }, [])
 
+  // Dynamically calculate the exact scroll width (card width + gap)
+  const getScrollAmount = () => {
+    const container = scrollContainerRef.current
+    if (!container) return 320
+    const card = container.querySelector<HTMLElement>('[data-service-card]')
+    if (!card) return 320
+    const gap = window.innerWidth >= 768 ? 24 : 16 // md:gap-6 (24px) or gap-4 (16px)
+    return card.offsetWidth + gap
+  }
+
   const scrollToPrev = () => {
-    scrollContainerRef.current?.scrollBy({ left: -420, behavior: 'smooth' })
+    scrollContainerRef.current?.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' })
   }
 
   const scrollToNext = () => {
-    scrollContainerRef.current?.scrollBy({ left: 420, behavior: 'smooth' })
+    scrollContainerRef.current?.scrollBy({ left: getScrollAmount(), behavior: 'smooth' })
   }
 
   return (
-    <section id="services" className="py-20 md:py-28 bg-surface relative overflow-hidden">
-      {/* Ambient background glow — adds depth to colour grading */}
+    <section id="services" className="py-16 md:py-28 bg-surface relative overflow-hidden">
+      {/* Ambient background glow — fixed sizes for mobile */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-3/4 h-3/4 bg-accent/10 rounded-full blur-[120px] -z-10" />
-        <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-primary/5 rounded-full blur-[100px] -z-10" />
+        <div className="h-[400px] w-[600px] bg-accent/10 rounded-full blur-[100px] -z-10 md:h-[500px] md:w-[800px] md:blur-[120px]" />
+        <div className="absolute bottom-0 right-0 h-[200px] w-[300px] bg-primary/5 rounded-full blur-[80px] -z-10 md:h-[400px] md:w-[600px] md:blur-[100px]" />
       </div>
 
       <div className="container-ww relative z-10">
@@ -49,35 +59,35 @@ export function Services() {
         />
 
         {/* Relative wrapper for arrows and fades */}
-        <div className="relative mt-16">
+        <div className="relative mt-10 md:mt-16">
           
-          {/* Left Arrow */}
+          {/* Left Arrow - Perfectly inside on mobile */}
           {canScrollLeft && (
             <button
               onClick={scrollToPrev}
-              className="absolute -left-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-app text-primary shadow-xl transition-all duration-300 hover:border-accent hover:text-accent hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] lg:-left-6"
+              className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-app text-primary shadow-xl transition-all duration-300 hover:border-accent hover:text-accent hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] md:-left-6 md:h-11 md:w-11"
               aria-label="Previous services"
             >
-              <ArrowLeft size={18} />
+              <ArrowLeft size={16} className="md:size-18" />
             </button>
           )}
 
-          {/* Right Arrow */}
+          {/* Right Arrow - Perfectly inside on mobile */}
           {canScrollRight && (
             <button
               onClick={scrollToNext}
-              className="absolute -right-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-app text-primary shadow-xl transition-all duration-300 hover:border-accent hover:text-accent hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] lg:-right-6"
+              className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-app text-primary shadow-xl transition-all duration-300 hover:border-accent hover:text-accent hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] md:-right-6 md:h-11 md:w-11"
               aria-label="Next services"
             >
-              <ArrowRight size={18} />
+              <ArrowRight size={16} className="md:size-18" />
             </button>
           )}
 
-          {/* Carousel Container */}
+          {/* Carousel Container - Full phone width cards */}
           <div
             ref={scrollContainerRef}
             onScroll={checkScrollPosition}
-            className="flex snap-x snap-mandatory gap-6 overflow-x-auto px-1 pt-6 pb-12 scroll-smooth"
+            className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pt-6 pb-10 scroll-px-1 md:gap-6 md:pb-12"
             style={{
               scrollbarWidth: 'none', // Firefox
               msOverflowStyle: 'none' // IE/Edge
@@ -89,17 +99,18 @@ export function Services() {
               }
             `}</style>
 
-            <div id="services-carousel" className="flex snap-x snap-mandatory gap-6">
+            <div id="services-carousel" className="flex snap-x snap-mandatory gap-4 md:gap-6">
               {services.map((service, i) => {
                 const Icon = service.icon
                 return (
                   <motion.div
                     key={i}
+                    data-service-card
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-60px' }}
                     transition={{ duration: 0.55, delay: i * 0.08, ease: 'easeOut' }}
-                    className="relative flex w-[85%] shrink-0 snap-center flex-col justify-between rounded-3xl border border-line bg-surface-raised/60 p-8 backdrop-blur-2xl transition-all duration-300 hover:-translate-y-2 hover:border-accent/40 hover:shadow-[0_20px_50px_-15px_rgba(34,197,94,0.15)] sm:w-[55%] lg:w-[31%]"
+                    className="relative flex w-full shrink-0 snap-center flex-col justify-between rounded-3xl border border-line bg-surface-raised/60 p-6 backdrop-blur-2xl transition-all duration-300 hover:-translate-y-2 hover:border-accent/40 hover:shadow-[0_20px_50px_-15px_rgba(34,197,94,0.15)] sm:w-[60%] md:p-8 lg:w-[31%]"
                   >
                     {/* Header */}
                     <div className="mb-6">
@@ -151,19 +162,19 @@ export function Services() {
             </div>
           </div>
 
-          {/* Right Edge Fade */}
+          {/* Right Edge Fade - Perfectly matched */}
           {canScrollRight && (
-            <div className="pointer-events-none absolute right-0 top-6 bottom-12 w-16 bg-linear-to-l from-surface to-transparent lg:w-32" />
+            <div className="pointer-events-none absolute right-0 top-6 bottom-10 w-10 bg-linear-to-l from-surface to-transparent md:bottom-12 md:w-16 lg:w-32" />
           )}
-          {/* Left Edge Fade */}
+          {/* Left Edge Fade - Perfectly matched */}
           {canScrollLeft && (
-            <div className="pointer-events-none absolute left-0 top-6 bottom-12 w-16 bg-linear-to-r from-surface to-transparent lg:w-32" />
+            <div className="pointer-events-none absolute left-0 top-6 bottom-10 w-10 bg-linear-to-r from-surface to-transparent md:bottom-12 md:w-16 lg:w-32" />
           )}
 
         </div>
 
         {/* Hint for mobile users */}
-        <p className="mt-2 text-center font-mono text-xs text-muted lg:hidden">
+        <p className="mt-4 text-center font-mono text-xs text-muted lg:hidden">
           Swipe or drag to see more services →
         </p>
       </div>

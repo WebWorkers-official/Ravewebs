@@ -32,27 +32,9 @@ function InstagramIcon({ size = 20 }: { size?: number }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <rect
-        x="3"
-        y="3"
-        width="18"
-        height="18"
-        rx="5"
-      />
-
-      <circle
-        cx="12"
-        cy="12"
-        r="4"
-      />
-
-      <circle
-        cx="17.5"
-        cy="6.5"
-        r="1"
-        fill="currentColor"
-        stroke="none"
-      />
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
     </svg>
   )
 }
@@ -111,15 +93,6 @@ export function Contact() {
     })
   }
 
-  /*
-   * Instagram URL
-   *
-   * IMPORTANT:
-   * Replace this with your actual Instagram profile URL.
-   *
-   * Example:
-   * https://www.instagram.com/yourusername/
-   */
   const instagramUrl =
     'https://www.instagram.com/yourusername/'
 
@@ -153,59 +126,36 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden bg-surface py-20 md:py-28"
+      className="relative overflow-hidden bg-surface py-16 md:py-28"
     >
-      {/* =========================================================
-          AMBIENT BACKGROUND GLOW (Softened & Polished)
-      ========================================================== */}
-
+      {/* AMBIENT BACKGROUND GLOW (Adjusted for Mobile) */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10"
       >
-        <div className="absolute left-1/4 top-0 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-accent/10 blur-[150px]" />
+        <div className="absolute left-1/4 top-0 h-[400px] w-[600px] -translate-x-1/2 rounded-full bg-accent/10 blur-[120px] md:h-[600px] md:w-[900px] md:blur-[150px]" />
 
-        <div className="absolute bottom-0 right-0 h-[400px] w-[600px] rounded-full bg-primary/5 blur-[120px]" />
+        <div className="absolute bottom-0 right-0 h-[300px] w-[400px] rounded-full bg-primary/5 blur-[100px] md:h-[400px] md:w-[600px] md:blur-[120px]" />
       </div>
 
       <div className="container-ww relative z-10">
-
-        {/* =======================================================
-            SECTION HEADING
-        ======================================================== */}
-
         <SectionHeading
           eyebrow="Start a Project"
           heading="Ready to build something better?"
           subheading="Tell us what's slowing you down and we'll show you what a system for it could look like."
         />
 
-        <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-12">
+        <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
 
-          {/* =====================================================
-              LEFT SIDE (Polished Glass Card)
-          ====================================================== */}
-
+          {/* LEFT SIDE (Polished Glass Card) */}
           <motion.div
-            initial={{
-              opacity: 0,
-              x: -30,
-            }}
-            whileInView={{
-              opacity: 1,
-              x: 0,
-            }}
-            viewport={{
-              once: true,
-              margin: '-60px',
-            }}
-            transition={{
-              duration: 0.6,
-              ease: 'easeOut',
-            }}
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
             className="lg:col-span-5"
           >
-            <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] border border-line bg-app/70 p-8 shadow-2xl shadow-accent/5 backdrop-blur-3xl md:p-10">
+            <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] border border-line bg-app/70 p-6 shadow-2xl shadow-accent/5 backdrop-blur-3xl md:p-10">
 
               {/* Background Glow */}
               <div
@@ -213,11 +163,8 @@ export function Contact() {
                 className="pointer-events-none absolute bottom-0 left-0 h-40 w-full bg-[radial-gradient(circle_at_bottom_left,var(--tw-gradient-stops))] from-accent/20 to-transparent"
               />
 
-              {/* =================================================
-                  LOGO
-              ================================================== */}
-
-              <div className="relative mb-6">
+              {/* LOGO */}
+              <div className="relative mb-6 md:mb-8">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-accent/20 bg-accent/10 text-accent shadow-[0_0_20px_rgba(34,197,94,0.15)] transition-all duration-300 hover:scale-105">
                   <svg
                     width="28"
@@ -237,32 +184,19 @@ export function Contact() {
                 </div>
               </div>
 
-              {/* =================================================
-                  BADGE (Refined)
-              ================================================== */}
-
+              {/* BADGE */}
               <div className="relative mb-8 inline-flex w-fit items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-accent shadow-[0_0_10px_rgba(34,197,94,0.1)]">
-                <Zap
-                  size={12}
-                  className="fill-current"
-                  aria-hidden="true"
-                />
-
+                <Zap size={12} className="fill-current" aria-hidden="true" />
                 Let's Build The Future
               </div>
 
-              {/* =================================================
-                  HEADING
-              ================================================== */}
-
-              <h3 className="relative font-display text-4xl font-bold leading-tight text-primary md:text-5xl">
+              {/* HEADING - Reduced size on mobile */}
+              <h3 className="relative font-display text-3xl font-bold leading-tight text-primary sm:text-4xl md:text-5xl">
                 Got an idea?
                 <br />
-
                 Let's{' '}
                 <span className="relative text-accent">
                   build it.
-
                   <svg
                     className="absolute -bottom-2 left-0 w-full"
                     height="4"
@@ -281,11 +215,8 @@ export function Contact() {
                 </span>
               </h3>
 
-              {/* =================================================
-                  DESCRIPTION
-              ================================================== */}
-
-              <p className="relative mb-10 mt-5 text-base leading-relaxed text-secondary">
+              {/* DESCRIPTION */}
+              <p className="relative mb-8 mt-5 text-base leading-relaxed text-secondary md:mb-10">
                 Tell us about your project and we'll get back to
                 you within{' '}
                 <strong className="font-semibold text-primary">
@@ -294,10 +225,7 @@ export function Contact() {
                 .
               </p>
 
-              {/* =================================================
-                  CONTACT CHANNELS (Elevated Buttons)
-              ================================================== */}
-
+              {/* CONTACT CHANNELS */}
               <div className="relative mt-auto flex flex-col gap-4">
                 {channels
                   .filter((channel) => Boolean(channel.href))
@@ -314,27 +242,20 @@ export function Contact() {
                         className="group flex items-center justify-between rounded-2xl border border-line bg-surface p-4 transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:bg-app/80 hover:shadow-[0_10px_30px_-10px_rgba(34,197,94,0.2)]"
                       >
                         <span className="flex items-center gap-4">
-                          {/* Icon */}
                           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent transition-all duration-300 group-hover:scale-110 group-hover:bg-accent/20">
-                            <Icon
-                              size={20}
-                              aria-hidden="true"
-                            />
+                            <Icon size={20} aria-hidden="true" />
                           </div>
 
-                          {/* Text */}
                           <div>
                             <p className="font-display text-sm font-bold text-primary">
                               {channel.label}
                             </p>
-
                             <p className="text-xs text-muted">
                               {channel.sub}
                             </p>
                           </div>
                         </span>
 
-                        {/* Chevron */}
                         <svg
                           className="h-4 w-4 text-muted transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent"
                           fill="none"
@@ -351,30 +272,15 @@ export function Contact() {
             </div>
           </motion.div>
 
-          {/* =====================================================
-              RIGHT SIDE - FORM (Premium Glass Card)
-          ====================================================== */}
-
+          {/* RIGHT SIDE - FORM (Premium Glass Card) */}
           <motion.div
-            initial={{
-              opacity: 0,
-              x: 30,
-            }}
-            whileInView={{
-              opacity: 1,
-              x: 0,
-            }}
-            viewport={{
-              once: true,
-              margin: '-60px',
-            }}
-            transition={{
-              duration: 0.6,
-              ease: 'easeOut',
-            }}
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
             className="lg:col-span-7"
           >
-            <div className="relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-line bg-app/70 p-6 shadow-2xl shadow-accent/5 backdrop-blur-3xl md:p-10">
+            <div className="relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-line bg-app/70 p-5 shadow-2xl shadow-accent/5 backdrop-blur-3xl md:p-10">
 
               {/* Top Gradient Line */}
               <div
@@ -382,61 +288,35 @@ export function Contact() {
                 className="absolute left-0 right-0 top-0 h-0.5 bg-linear-to-r from-transparent via-accent/40 to-transparent"
               />
 
-              {/* =================================================
-                  FORM HEADER
-              ================================================== */}
-
-              <div className="mb-10 flex items-center gap-4">
+              {/* FORM HEADER */}
+              <div className="mb-8 flex items-center gap-4 md:mb-10">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accent/15 text-accent shadow-[0_0_20px_rgba(34,197,94,0.2)]">
-                  <MessageCircle
-                    size={24}
-                    className="fill-current"
-                    aria-hidden="true"
-                  />
+                  <MessageCircle size={24} className="fill-current" aria-hidden="true" />
                 </div>
 
                 <div>
                   <h3 className="font-display text-xl font-bold text-primary">
                     Send us a message
                   </h3>
-
                   <p className="text-sm text-muted">
                     Fill the form below and let's get started
                   </p>
                 </div>
               </div>
 
-              {/* =================================================
-                  CONTACT FORM
-              ================================================== */}
+              {/* CONTACT FORM */}
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5 md:gap-6">
 
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-6"
-              >
-
-                {/* =================================================
-                    NAME + EMAIL
-                ================================================== */}
-
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                {/* NAME + EMAIL */}
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6">
 
                   {/* NAME */}
                   <div className="group relative">
-                    <label
-                      htmlFor="contact-name"
-                      className="mb-2 block text-sm font-medium text-secondary"
-                    >
+                    <label htmlFor="contact-name" className="mb-2 block text-sm font-medium text-secondary">
                       Name
                     </label>
-
                     <div className="relative">
-                      <User
-                        size={16}
-                        className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent"
-                        aria-hidden="true"
-                      />
-
+                      <User size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent" aria-hidden="true" />
                       <input
                         id="contact-name"
                         type="text"
@@ -453,20 +333,11 @@ export function Contact() {
 
                   {/* EMAIL */}
                   <div className="group relative">
-                    <label
-                      htmlFor="contact-email"
-                      className="mb-2 block text-sm font-medium text-secondary"
-                    >
+                    <label htmlFor="contact-email" className="mb-2 block text-sm font-medium text-secondary">
                       Email
                     </label>
-
                     <div className="relative">
-                      <Mail
-                        size={16}
-                        className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent"
-                        aria-hidden="true"
-                      />
-
+                      <Mail size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent" aria-hidden="true" />
                       <input
                         id="contact-email"
                         type="email"
@@ -482,106 +353,45 @@ export function Contact() {
                   </div>
                 </div>
 
-                {/* =================================================
-                    PHONE NUMBER
-                ================================================== */}
-
+                {/* PHONE NUMBER - Stacked on Mobile for comfort */}
                 <div className="group relative">
-                  <label
-                    htmlFor="contact-phone"
-                    className="mb-2 block text-sm font-medium text-secondary"
-                  >
+                  <label htmlFor="contact-phone" className="mb-2 block text-sm font-medium text-secondary">
                     Ph Number
                   </label>
-
-                  <div className="flex gap-3">
+                  <div className="flex flex-col gap-3 sm:flex-row">
 
                     {/* COUNTRY CODE */}
-                    <div className="relative shrink-0">
+                    <div className="relative w-full sm:w-auto sm:shrink-0">
                       <select
                         name="code"
                         value={form.code}
                         onChange={handleChange}
                         aria-label="Country code"
-                        className="h-full appearance-none rounded-xl border border-line bg-surface py-4 pl-4 pr-9 text-sm text-primary transition cursor-pointer hover:border-accent/30 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        className="h-full w-full appearance-none rounded-xl border border-line bg-surface py-4 pl-4 pr-9 text-sm text-primary transition cursor-pointer hover:border-accent/30 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 sm:w-auto"
                       >
-                        <option value="+91">
-                          🇮🇳 +91
-                        </option>
-
-                        <option value="+1">
-                          🇺🇸 +1
-                        </option>
-
-                        <option value="+44">
-                          🇬🇧 +44
-                        </option>
-
-                        <option value="+61">
-                          🇦🇺 +61
-                        </option>
-
-                        <option value="+49">
-                          🇩🇪 +49
-                        </option>
-
-                        <option value="+971">
-                          🇦🇪 +971
-                        </option>
-
-                        <option value="+65">
-                          🇸🇬 +65
-                        </option>
-
-                        <option value="+81">
-                          🇯🇵 +81
-                        </option>
-
-                        <option value="+33">
-                          🇫🇷 +33
-                        </option>
-
-                        <option value="+39">
-                          🇮🇹 +39
-                        </option>
-
-                        <option value="+34">
-                          🇪🇸 +34
-                        </option>
-
-                        <option value="+55">
-                          🇧🇷 +55
-                        </option>
-
-                        <option value="+27">
-                          🇿🇦 +27
-                        </option>
+                        <option value="+91">🇮🇳 +91</option>
+                        <option value="+1">🇺🇸 +1</option>
+                        <option value="+44">🇬🇧 +44</option>
+                        <option value="+61">🇦🇺 +61</option>
+                        <option value="+49">🇩🇪 +49</option>
+                        <option value="+971">🇦🇪 +971</option>
+                        <option value="+65">🇸🇬 +65</option>
+                        <option value="+81">🇯🇵 +81</option>
+                        <option value="+33">🇫🇷 +33</option>
+                        <option value="+39">🇮🇹 +39</option>
+                        <option value="+34">🇪🇸 +34</option>
+                        <option value="+55">🇧🇷 +55</option>
+                        <option value="+27">🇿🇦 +27</option>
                       </select>
 
-                      <svg
-                        className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
+                      <svg className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </div>
 
                     {/* PHONE INPUT */}
                     <div className="relative flex-1">
-                      <Phone
-                        size={16}
-                        className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent"
-                        aria-hidden="true"
-                      />
-
+                      <Phone size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent" aria-hidden="true" />
                       <input
                         id="contact-phone"
                         type="tel"
@@ -596,25 +406,13 @@ export function Contact() {
                   </div>
                 </div>
 
-                {/* =================================================
-                    MESSAGE
-                ================================================== */}
-
+                {/* MESSAGE */}
                 <div className="group relative">
-                  <label
-                    htmlFor="contact-message"
-                    className="mb-2 block text-sm font-medium text-secondary"
-                  >
+                  <label htmlFor="contact-message" className="mb-2 block text-sm font-medium text-secondary">
                     Message
                   </label>
-
                   <div className="relative">
-                    <PenLine
-                      size={16}
-                      className="pointer-events-none absolute left-4 top-4 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent"
-                      aria-hidden="true"
-                    />
-
+                    <PenLine size={16} className="pointer-events-none absolute left-4 top-4 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent" aria-hidden="true" />
                     <textarea
                       id="contact-message"
                       name="message"
@@ -628,28 +426,14 @@ export function Contact() {
                   </div>
                 </div>
 
-                {/* =================================================
-                    WHAT YOU WANT TO BUILD
-                ================================================== */}
-
+                {/* WHAT YOU WANT TO BUILD */}
                 <div className="group relative">
-                  <label
-                    htmlFor="contact-build"
-                    className="mb-2 block text-sm font-medium text-secondary"
-                  >
+                  <label htmlFor="contact-build" className="mb-2 block text-sm font-medium text-secondary">
                     What You Want to Build{' '}
-                    <span className="text-muted">
-                      (Optional)
-                    </span>
+                    <span className="text-muted">(Optional)</span>
                   </label>
-
                   <div className="relative">
-                    <Box
-                      size={16}
-                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent"
-                      aria-hidden="true"
-                    />
-
+                    <Box size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent" aria-hidden="true" />
                     <input
                       id="contact-build"
                       type="text"
@@ -662,36 +446,19 @@ export function Contact() {
                   </div>
                 </div>
 
-                {/* =================================================
-                    SUBMIT BUTTON (Premium Glow)
-                ================================================== */}
-
+                {/* SUBMIT BUTTON */}
                 <button
                   type="submit"
                   className="group mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-accent to-emerald-400 py-4 text-sm font-bold uppercase tracking-wide text-black transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_15px_40px_-10px_rgba(34,197,94,0.6)] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-app"
                 >
                   Send Message
-
-                  <Send
-                    size={16}
-                    className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
-                    aria-hidden="true"
-                  />
+                  <Send size={16} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" aria-hidden="true" />
                 </button>
 
-                {/* =================================================
-                    PRIVACY NOTE
-                ================================================== */}
-
+                {/* PRIVACY NOTE */}
                 <p className="mt-4 flex items-center justify-center gap-2 text-center text-xs text-muted">
-                  <Lock
-                    size={12}
-                    className="text-accent"
-                    aria-hidden="true"
-                  />
-
-                  Your data is safe with us. We never share your
-                  information.
+                  <Lock size={12} className="text-accent" aria-hidden="true" />
+                  Your data is safe with us. We never share your information.
                 </p>
               </form>
             </div>
