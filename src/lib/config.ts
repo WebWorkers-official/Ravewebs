@@ -5,7 +5,7 @@
 export const config = {
   bookingUrl: import.meta.env.VITE_BOOKING_URL as string | undefined,
   whatsappUrl: import.meta.env.VITE_WHATSAPP_URL as string | undefined,
-  email: import.meta.env.VITE_EMAIL as string | undefined,
+  email: 'info@ravewebs.in' as string | undefined,
   linkedinUrl: import.meta.env.VITE_LINKEDIN_URL as string | undefined,
   contactApiUrl: import.meta.env.VITE_CONTACT_API_URL as string | undefined,
 }

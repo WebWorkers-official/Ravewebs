@@ -12,7 +12,6 @@ import {
   Zap,
 } from 'lucide-react'
 import { SectionHeading } from '@/components/SectionHeading'
-import { config } from '@/lib/config'
 
 /**
  * Instagram icon
@@ -94,7 +93,12 @@ export function Contact() {
   }
 
   const instagramUrl =
-    'https://www.instagram.com/yourusername/'
+    'https://www.instagram.com/ravewebs.in/'
+
+  const whatsappUrl =
+    'https://wa.me/918117028576'
+
+  const emailUrl = 'mailto:info@ravewebs.in'
 
   // Contact Channels
   const channels = [
@@ -103,16 +107,14 @@ export function Contact() {
       label: 'WhatsApp',
       sub: 'Fastest response',
       icon: MessageCircle,
-      href: config.whatsappUrl,
+      href: whatsappUrl,
     },
     {
       key: 'email',
       label: 'Email',
       sub: 'For project details',
       icon: Mail,
-      href: config.email
-        ? `mailto:${config.email}`
-        : undefined,
+      href: emailUrl,
     },
     {
       key: 'instagram',
@@ -133,9 +135,9 @@ export function Contact() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10"
       >
-        <div className="absolute left-1/4 top-0 h-[400px] w-[600px] -translate-x-1/2 rounded-full bg-accent/10 blur-[120px] md:h-[600px] md:w-[900px] md:blur-[150px]" />
+        <div className="absolute left-1/4 top-0 h-400px w-600px -translate-x-1/2 rounded-full bg-accent/10 blur-[120px] md:h-600px md:w-900px md:blur-[150px]" />
 
-        <div className="absolute bottom-0 right-0 h-[300px] w-[400px] rounded-full bg-primary/5 blur-[100px] md:h-[400px] md:w-[600px] md:blur-[120px]" />
+        <div className="absolute bottom-0 right-0 h-300px w-400px rounded-full bg-primary/5 blur-[100px] md:h-400px md:w-600px md:blur-[120px]" />
       </div>
 
       <div className="container-ww relative z-10">
@@ -155,7 +157,7 @@ export function Contact() {
             transition={{ duration: 0.6, ease: 'easeOut' }}
             className="lg:col-span-5"
           >
-            <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] border border-line bg-app/70 p-6 shadow-2xl shadow-accent/5 backdrop-blur-3xl md:p-10">
+            <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-2rem border border-line bg-app/70 p-6 shadow-2xl shadow-accent/5 backdrop-blur-3xl md:p-10">
 
               {/* Background Glow */}
               <div
@@ -280,7 +282,7 @@ export function Contact() {
             transition={{ duration: 0.6, ease: 'easeOut' }}
             className="lg:col-span-7"
           >
-            <div className="relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-line bg-app/70 p-5 shadow-2xl shadow-accent/5 backdrop-blur-3xl md:p-10">
+            <div className="relative flex h-full flex-col overflow-hidden rounded-2rem border border-line bg-app/70 p-5 shadow-2xl shadow-accent/5 backdrop-blur-3xl md:p-10">
 
               {/* Top Gradient Line */}
               <div
