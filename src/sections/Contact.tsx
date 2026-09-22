@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import IntlTelInput from '@intl-tel-input/react'
+import 'intl-tel-input/styles'
 import {
   User,
   Mail,
-  Phone,
   PenLine,
   Box,
   Send,
@@ -43,7 +44,6 @@ export function Contact() {
     name: '',
     email: '',
     phone: '',
-    code: '+91',
     message: '',
     build: '',
   })
@@ -63,34 +63,47 @@ export function Contact() {
     }))
   }
 
-  const handleSubmit = (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
-    e.preventDefault()
+const handleSubmit = async (
+  e: React.FormEvent<HTMLFormElement>
+) => {
+  e.preventDefault();
 
-    const fullPhone = form.phone
-      ? `${form.code} ${form.phone}`
-      : ''
+  try {
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        message: form.message,
+        build: form.build,
+      }),
+    });
 
-    console.log('Contact Form Submission:', {
-      name: form.name,
-      email: form.email,
-      phone: fullPhone,
-      message: form.message,
-      build: form.build,
-    })
+    const result = await response.json();
 
-    alert('Message sent successfully!')
+    if (!response.ok) {
+      alert(result.error || "Failed to send message.");
+      return;
+    }
+
+    alert("Message sent successfully!");
 
     setForm({
-      name: '',
-      email: '',
-      phone: '',
-      code: '+91',
-      message: '',
-      build: '',
-    })
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+      build: "",
+    });
+  } catch (error) {
+    console.error("Contact form error:", error);
+    alert("Something went wrong. Please try again.");
   }
+};
 
   const instagramUrl =
     'https://www.instagram.com/ravewebs.in/'
@@ -355,56 +368,61 @@ export function Contact() {
                   </div>
                 </div>
 
-                {/* PHONE NUMBER - Stacked on Mobile for comfort */}
+                {/* PHONE NUMBER */}
                 <div className="group relative">
-                  <label htmlFor="contact-phone" className="mb-2 block text-sm font-medium text-secondary">
+                  <label
+                    htmlFor="contact-phone"
+                    className="mb-2 block text-sm font-medium text-secondary"
+                  >
                     Ph Number
                   </label>
-                  <div className="flex flex-col gap-3 sm:flex-row">
 
-                    {/* COUNTRY CODE */}
-                    <div className="relative w-full sm:w-auto sm:shrink-0">
-                      <select
-                        name="code"
-                        value={form.code}
-                        onChange={handleChange}
-                        aria-label="Country code"
-                        className="h-full w-full appearance-none rounded-xl border border-line bg-surface py-4 pl-4 pr-9 text-sm text-primary transition cursor-pointer hover:border-accent/30 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 sm:w-auto"
-                      >
-                        <option value="+91">🇮🇳 +91</option>
-                        <option value="+1">🇺🇸 +1</option>
-                        <option value="+44">🇬🇧 +44</option>
-                        <option value="+61">🇦🇺 +61</option>
-                        <option value="+49">🇩🇪 +49</option>
-                        <option value="+971">🇦🇪 +971</option>
-                        <option value="+65">🇸🇬 +65</option>
-                        <option value="+81">🇯🇵 +81</option>
-                        <option value="+33">🇫🇷 +33</option>
-                        <option value="+39">🇮🇹 +39</option>
-                        <option value="+34">🇪🇸 +34</option>
-                        <option value="+55">🇧🇷 +55</option>
-                        <option value="+27">🇿🇦 +27</option>
-                      </select>
-
-                      <svg className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-
-                    {/* PHONE INPUT */}
-                    <div className="relative flex-1">
-                      <Phone size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent" aria-hidden="true" />
-                      <input
-                        id="contact-phone"
-                        type="tel"
-                        name="phone"
-                        placeholder="Your phone number"
-                        value={form.phone}
-                        onChange={handleChange}
-                        autoComplete="tel"
-                        className="w-full rounded-xl border border-line bg-surface py-4 pl-11 pr-4 text-sm text-primary placeholder:text-muted/60 transition-all duration-300 hover:border-accent/30 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 focus:shadow-[0_0_0_4px_rgba(34,197,94,0.05)]"
-                      />
-                    </div>
+                  <div className="relative w-full">
+                    <IntlTelInput
+                      value={form.phone}
+                      onChangeNumber={(phone) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          phone,
+                        }))
+                      }
+                      initialCountry="in"
+                      separateDialCode
+                      countrySearch
+                      countrySelectorMode="AUTO"
+                      formatAsYouType
+                      loadUtils={() => import('intl-tel-input/utils')}
+                      inputProps={{
+                        id: 'contact-phone',
+                        name: 'phone',
+                        autoComplete: 'tel',
+                        placeholder: 'Your phone number',
+                        required: true,
+                      }}
+                      classNames={{
+                        container: 'w-full',
+                        input:
+                          'w-full rounded-xl border border-line bg-surface py-4 pr-4 text-sm text-primary placeholder:text-muted/60 transition-all duration-300 hover:border-accent/30 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 focus:shadow-[0_0_0_4px_rgba(34,197,94,0.05)]',
+                        countryContainer:
+                          'rounded-l-xl border-line bg-surface',
+                        selectedCountry:
+                          'rounded-l-xl border-line bg-surface',
+                        selectedCountryPrimary:
+                          'rounded-l-xl bg-surface hover:bg-accent/5',
+                        selectedDialCode:
+                          'text-sm text-primary',
+                        countrySelector:
+                          'rounded-xl border border-line bg-surface shadow-2xl',
+                        searchInput:
+                          'rounded-lg border border-line bg-surface text-primary',
+                        countryListItem:
+                          'text-sm text-primary hover:bg-accent/10',
+                        countryName:
+                          'text-primary',
+                        dialCode:
+                          'text-muted',
+                      }}
+                    />
                   </div>
                 </div>
 

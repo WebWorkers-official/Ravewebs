@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { Button } from '@/components/Button'
 
-const headlineWords = 'We build the systems that run your business while you run your business.'.split(' ')
+const headlineWords = 'Capture every lead, qualify it with AI, and never miss a follow-up again.'.split(' ')
 
 function handleScrollTo(href: string) {
   return (e: React.MouseEvent) => {
@@ -18,13 +18,13 @@ export function Hero() {
   return (
     <section id="top" ref={sectionRef} className="relative overflow-hidden pt-16 pb-20 md:pt-28 md:pb-32">
       
-      {/* Ambient Background Glow - Scaled down for mobile */}
+      {/* Ambient Background Glow */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-0 h-[400px] w-[600px] -translate-x-1/2 rounded-full bg-accent/10 blur-[100px] md:h-[500px] md:w-[800px] md:blur-[120px]" />
+        <div className="absolute left-1/2 top-0 h-400px w-600px -translate-x-1/2 rounded-full bg-accent/10 blur-[100px] md:h-[500px] md:w-[800px] md:blur-[120px]" />
       </div>
 
       <div className="container-ww relative">
-        {/* Eyebrow - refined with a dash & added flex-wrap */}
+        {/* Eyebrow — now focused on the single product */}
         <motion.p
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -32,10 +32,10 @@ export function Hero() {
           className="mb-6 flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-[0.14em] text-accent"
         >
           <span className="h-2 w-8 rounded-full bg-accent/80 shadow-[0_0_10px_rgba(34,197,94,0.8)]" />
-          RaveWebs — Digital &amp; AI Automation Agency
+          RaveWebs — AI Lead Management System
         </motion.p>
 
-        {/* Oversized editorial headline - Scaled perfectly for mobile */}
+        {/* Oversized editorial headline */}
         <h1 className="max-w-5xl font-display text-4xl sm:text-6xl md:text-7xl lg:text-[5.25rem] font-bold leading-[0.98] tracking-tight text-primary">
           {headlineWords.map((word, i) => (
             <span key={i} className="inline-block overflow-hidden pb-1 align-top">
@@ -51,7 +51,7 @@ export function Hero() {
                 }}
                 className="inline-block will-change-transform"
               >
-                {word === 'business.' || word === 'business' ? (
+                {word === 'again.' || word === 'again' ? (
                   <motion.span
                     className="relative inline-block cursor-pointer text-accent"
                     whileHover={{ 
@@ -62,7 +62,24 @@ export function Hero() {
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   >
                     {word}&nbsp;
-                    {/* Elegant underline that draws itself */}
+                    <motion.span
+                      className="absolute bottom-1 left-0 h-[2px] w-full origin-left bg-current"
+                      initial={{ scaleX: 0 }}
+                      whileHover={{ scaleX: 1 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </motion.span>
+                ) : word === 'AI,' || word === 'AI' ? (
+                  <motion.span
+                    className="relative inline-block cursor-pointer text-accent"
+                    whileHover={{ 
+                      y: -3, 
+                      color: '#4ade80', 
+                      textShadow: '0 4px 20px rgba(34,197,94,0.6)' 
+                    }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                  >
+                    {word}&nbsp;
                     <motion.span
                       className="absolute bottom-1 left-0 h-[2px] w-full origin-left bg-current"
                       initial={{ scaleX: 0 }}
@@ -77,39 +94,6 @@ export function Hero() {
             </span>
           ))}
         </h1>
-
-        {/* Subcopy + CTAs - Tighter on mobile, full width buttons for easy tapping */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.7 }}
-          className="mt-8 md:mt-12 flex flex-col gap-8 border-t border-line pt-8 md:flex-row md:items-center md:justify-between"
-        >
-          <p className="max-w-md text-sm sm:text-base md:text-lg leading-relaxed text-secondary">
-            RaveWebs designs websites, AI agents and automation that pick up the calls,
-            answer the messages and chase the leads your team doesn't have time for.
-          </p>
-
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            {/* Primary Button with hover glow - Full width on mobile */}
-            <Button
-              as="a"
-              href="#contact"
-              onClick={handleScrollTo('#contact')}
-              variant="primary"
-              className="w-full sm:w-auto group justify-center transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(34,197,94,0.5)]"
-              icon={<ArrowUpRight size={16} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />}
-            >
-              Start a Project
-            </Button>
-            
-            {/* Secondary Button - Full width on mobile */}
-            <Button as="a" href="#services" onClick={handleScrollTo('#services')} variant="secondary" className="w-full sm:w-auto justify-center transition-all duration-300 hover:scale-105 hover:border-accent hover:text-accent">
-              See What We Build
-            </Button>
-          </div>
-        </motion.div>
-
       </div>
     </section>
   )

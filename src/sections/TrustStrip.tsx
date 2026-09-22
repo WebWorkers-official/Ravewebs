@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 
 const stages = [
-  { label: 'Build', detail: 'A website and digital presence that actually represents the business.' },
-  { label: 'Automate', detail: 'AI agents and workflows that handle the repetitive, time-consuming work.' },
-  { label: 'Grow', detail: 'Systems that keep working after launch — capturing and converting leads.' },
+  { label: 'Collect', detail: 'Capture leads from your website and every source into one centralized dashboard.' },
+  { label: 'Score', detail: 'AI analyzes and scores each lead — so you always know which opportunities to prioritize.' },
+  { label: 'Follow-up', detail: 'Personalized AI responses, automated follow-ups, and a clear pipeline that turns leads into revenue.' },
 ]
 
 export function TrustStrip() {
