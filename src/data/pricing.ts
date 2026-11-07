@@ -1,3 +1,4 @@
+
 export interface PricingPlan {
   id: string
   name: string
@@ -7,70 +8,63 @@ export interface PricingPlan {
   note?: string
 }
 
-// Source of truth: official RaveWebs pricing sheet.
-// Only the AI Automation — Lead Management System is offered.
+// RaveWebs AI Lead Management System — US Pricing
+
 export const pricingPlans: PricingPlan[] = [
   {
     id: 'lead-management-starter',
-    name: 'Lead Management — Starter',
-    setup: '$999',
+    name: 'Starter',
+    setup: '$499',
     monthly: '$99',
     includes: [
       'Centralized Lead Dashboard',
       'AI Lead Scoring & Qualification',
       'Hot / Warm / Cold Prioritization',
+      'Basic Sales Pipeline',
       'Up to 500 leads / month',
-      'Up to 3 users',
-      'Email support',
     ],
-    note: 'For solo founders and small teams getting started with lead management.',
+    note: 'For small businesses looking to organize and manage incoming leads.',
   },
   {
     id: 'lead-management-growth',
-    name: 'Lead Management — Growth',
-    setup: '$2,499',
-    monthly: '$249',
+    name: 'Growth',
+    setup: '$999',
+    monthly: '$199',
     includes: [
       'Everything in Starter',
-      'AI-Generated Personalized Responses',
-      'Follow-Up Management',
+      'AI-Personalized Lead Responses',
+      'Automated Follow-Up Management',
       'Lead Source Tracking',
       'Up to 2,000 leads / month',
-      'Up to 10 users',
-      'Priority email support',
     ],
-    note: 'For growing sales teams with consistent inbound leads.',
+    note: 'For growing businesses looking to improve lead conversion.',
   },
   {
     id: 'lead-management-scale',
-    name: 'Lead Management — Scale',
-    setup: '$4,999',
-    monthly: '$499',
+    name: 'Scale',
+    setup: '$1,999',
+    monthly: '$399',
     includes: [
       'Everything in Growth',
       'Sales Pipeline & Revenue Insights',
-      'Custom Integrations (up to 2)',
-      'Advanced Reporting',
+      'Advanced Reporting & Analytics',
+      'Up to 2 Custom Integrations',
       'Up to 10,000 leads / month',
-      'Up to 25 users',
-      'Priority support',
     ],
-    note: 'For established teams managing multiple lead sources.',
+    note: 'For established teams managing high volumes of leads.',
   },
   {
     id: 'lead-management-enterprise',
-    name: 'Lead Management — Enterprise',
-    setup: '$9,999',
-    monthly: '$999',
+    name: 'Enterprise',
+    setup: 'Custom',
+    monthly: 'Custom',
     includes: [
       'Everything in Scale',
       'Custom Integrations & Data Migration',
-      'Security, DPA & Access Controls',
-      'Dedicated Onboarding & Training',
-      'Custom lead volume',
-      'Unlimited users',
-      'SLA & Premium support',
+      'Advanced Security & Access Controls',
+      'Dedicated Onboarding & Support',
+      'Custom Workflows & Lead Capacity',
     ],
-    note: 'For large teams with custom workflows and compliance needs.',
+    note: 'For large organizations requiring tailored solutions.',
   },
 ]

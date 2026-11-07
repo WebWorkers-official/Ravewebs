@@ -1,7 +1,5 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import IntlTelInput from '@intl-tel-input/react'
-import 'intl-tel-input/styles'
+
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import {
   User,
   Mail,
@@ -10,481 +8,483 @@ import {
   Send,
   Lock,
   MessageCircle,
-  Zap,
-} from 'lucide-react'
-import { SectionHeading } from '@/components/SectionHeading'
+  ArrowUpRight,
+  CheckCircle2,
+  LoaderCircle,
+} from "lucide-react";
 
-/**
- * Instagram icon
- * Kept as an inline SVG because lucide-react does not provide
- * the Instagram brand icon in your current setup.
- */
-function InstagramIcon({ size = 20 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <rect x="3" y="3" width="18" height="18" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-    </svg>
-  )
-}
+import { SiInstagram } from "react-icons/si";
+import IntlTelInput from "@intl-tel-input/react";
+import "intl-tel-input/styles";
 
-export function Contact() {
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: '',
-    build: '',
-  })
+type FormStatus = {
+  type: "success" | "error";
+  message: string;
+} | null;
+
+export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+    build: "",
+  });
+
+  const [phone, setPhone] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState<FormStatus>(null);
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement |
-      HTMLTextAreaElement |
-      HTMLSelectElement
-    >
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
 
-    setForm((prev) => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
 
-const handleSubmit = async (
-  e: React.FormEvent<HTMLFormElement>
-) => {
-  e.preventDefault();
+    if (status) setStatus(null);
+  };
 
-  try {
-    const response = await fetch("/api/contact", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        message: form.message,
-        build: form.build,
-      }),
-    });
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-    const result = await response.json();
+    if (isSubmitting) return;
 
-    if (!response.ok) {
-      alert(result.error || "Failed to send message.");
-      return;
+    setIsSubmitting(true);
+    setStatus(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone,
+          message: formData.message,
+          build: formData.build,
+        }),
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          result.message ||
+            result.error ||
+            "Unable to send your message. Please try again."
+        );
+      }
+
+      setStatus({
+        type: "success",
+        message: "Your message has been sent. We'll be in touch soon.",
+      });
+
+      setFormData({
+        name: "",
+        email: "",
+        message: "",
+        build: "",
+      });
+
+      setPhone("");
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
+  };
 
-    alert("Message sent successfully!");
+  const inputClass =
+    "w-full rounded-xl border border-[#DDE5DF] bg-white px-4 py-3.5 text-sm text-[#17251C] outline-none transition placeholder:text-[#929D95] focus:border-[#168653] focus:ring-2 focus:ring-[#168653]/10";
 
-    setForm({
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
-      build: "",
-    });
-  } catch (error) {
-    console.error("Contact form error:", error);
-    alert("Something went wrong. Please try again.");
-  }
-};
-
-  const instagramUrl =
-    'https://www.instagram.com/ravewebs.in/'
-
-  const whatsappUrl =
-    'https://wa.me/918117028576'
-
-  const emailUrl = 'mailto:info@ravewebs.in'
-
-  // Contact Channels
-  const channels = [
-    {
-      key: 'whatsapp',
-      label: 'WhatsApp',
-      sub: 'Fastest response',
-      icon: MessageCircle,
-      href: whatsappUrl,
-    },
-    {
-      key: 'email',
-      label: 'Email',
-      sub: 'For project details',
-      icon: Mail,
-      href: emailUrl,
-    },
-    {
-      key: 'instagram',
-      label: 'Instagram',
-      sub: 'Follow our work',
-      icon: InstagramIcon,
-      href: instagramUrl,
-    },
-  ]
+  const labelClass =
+    "mb-2 block text-sm font-semibold text-[#26372C]";
 
   return (
     <section
       id="contact"
-      className="relative overflow-hidden bg-surface py-16 md:py-28"
+      className="relative overflow-hidden bg-[#F7FAF7] px-5 py-20 sm:px-8 lg:px-12 lg:py-28"
     >
-      {/* AMBIENT BACKGROUND GLOW (Adjusted for Mobile) */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10"
-      >
-        <div className="absolute left-1/4 top-0 h-400px w-600px -translate-x-1/2 rounded-full bg-accent/10 blur-[120px] md:h-600px md:w-900px md:blur-[150px]" />
+      <div className="mx-auto max-w-7xl">
+        <div className="grid overflow-hidden rounded-[28px] bg-white shadow-[0_20px_70px_rgba(20,45,28,0.08)] lg:grid-cols-[0.85fr_1.15fr]">
 
-        <div className="absolute bottom-0 right-0 h-300px w-400px rounded-full bg-primary/5 blur-[100px] md:h-400px md:w-600px md:blur-[120px]" />
-      </div>
+          {/* LEFT SIDE */}
+          <div className="relative flex flex-col justify-between overflow-hidden bg-[#14291D] p-8 text-white sm:p-10 lg:p-12">
 
-      <div className="container-ww relative z-10">
-        <SectionHeading
-          eyebrow="Start a Project"
-          heading="Ready to build something better?"
-          subheading="Tell us what's slowing you down and we'll show you what a system for it could look like."
-        />
+            <div className="pointer-events-none absolute -right-28 -top-28 h-80 w-80 rounded-full border border-white/10" />
+            <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full border border-white/10" />
+            <div className="pointer-events-none absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-[#168653]/15 blur-3xl" />
 
-        <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
-
-          {/* LEFT SIDE (Polished Glass Card) */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-            className="lg:col-span-5"
-          >
-            <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-2rem border border-line bg-app/70 p-6 shadow-2xl shadow-accent/5 backdrop-blur-3xl md:p-10">
-
-              {/* Background Glow */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute bottom-0 left-0 h-40 w-full bg-[radial-gradient(circle_at_bottom_left,var(--tw-gradient-stops))] from-accent/20 to-transparent"
-              />
-
-              {/* LOGO */}
-              <div className="relative mb-6 md:mb-8">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-accent/20 bg-accent/10 text-accent shadow-[0_0_20px_rgba(34,197,94,0.15)] transition-all duration-300 hover:scale-105">
-                  <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    <path d="M2 17l10 5 10-5" />
-                    <path d="M2 12l10 5 10-5" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* BADGE */}
-              <div className="relative mb-8 inline-flex w-fit items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-accent shadow-[0_0_10px_rgba(34,197,94,0.1)]">
-                <Zap size={12} className="fill-current" aria-hidden="true" />
-                Let's Build The Future
-              </div>
-
-              {/* HEADING - Reduced size on mobile */}
-              <h3 className="relative font-display text-3xl font-bold leading-tight text-primary sm:text-4xl md:text-5xl">
-                Got an idea?
-                <br />
-                Let's{' '}
-                <span className="relative text-accent">
-                  build it.
-                  <svg
-                    className="absolute -bottom-2 left-0 w-full"
-                    height="4"
-                    viewBox="0 0 100 4"
-                    preserveAspectRatio="none"
-                    fill="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M0 3.5H100"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      className="text-accent"
-                    />
-                  </svg>
+            <div className="relative z-10">
+              <div className="mb-10 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2">
+                <span className="h-2 w-2 rounded-full bg-[#58D68D]" />
+                <span className="text-xs font-semibold tracking-wide text-white">
+                  LET'S BUILD SOMETHING
                 </span>
-              </h3>
+              </div>
 
-              {/* DESCRIPTION */}
-              <p className="relative mb-8 mt-5 text-base leading-relaxed text-secondary md:mb-10">
-                Tell us about your project and we'll get back to
-                you within{' '}
-                <strong className="font-semibold text-primary">
-                  24 hours
-                </strong>
-                .
+              <h2 className="max-w-lg text-4xl font-bold leading-[1.12] tracking-tight sm:text-5xl">
+                Have a project in mind?
+                <span className="mt-2 block text-[#71D99A]">
+                  Let's make it happen.
+                </span>
+              </h2>
+
+              <p className="mt-6 max-w-md text-base leading-7 text-white/75">
+                Tell us what you're working on. We'll help you find the right
+                technology and turn your ideas into something meaningful.
+              </p>
+            </div>
+
+            {/* CONTACT LINKS */}
+            <div className="relative z-10 mt-16 space-y-7">
+              <div>
+                <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-white/60">
+                  Get in touch
+                </p>
+
+                {/* EMAIL */}
+                <a
+                  href="mailto:info@ravewebs.in"
+                  className="group flex items-center justify-between border-b border-white/15 py-4"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10">
+                      <Mail size={19} />
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/60">Email us</p>
+                      <p className="mt-1 text-sm font-semibold text-white">
+                        info@ravewebs.in
+                      </p>
+                    </div>
+                  </div>
+                  <ArrowUpRight size={19} className="text-white/60 group-hover:text-[#71D99A]" />
+                </a>
+
+                {/* WHATSAPP */}
+                <a
+                  href="https://wa.me/918117028576"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center justify-between border-b border-white/15 py-4"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10">
+                      <MessageCircle size={19} />
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/60">WhatsApp</p>
+                      <p className="mt-1 text-sm font-semibold text-white">
+                        Chat with our team
+                      </p>
+                    </div>
+                  </div>
+                  <ArrowUpRight size={19} className="text-white/60 group-hover:text-[#71D99A]" />
+                </a>
+
+                {/* INSTAGRAM */}
+                <a
+                  href="https://www.instagram.com/ravewebs.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Visit RaveWebs on Instagram"
+                  className="group flex items-center justify-between py-4"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 transition group-hover:bg-[#E1306C]/20">
+                      <SiInstagram
+                        size={20}
+                        className="text-white transition group-hover:text-[#F472A5]"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/60">Instagram</p>
+                      <p className="mt-1 text-sm font-semibold text-white">
+                        @ravewebs.in
+                      </p>
+                    </div>
+                  </div>
+                  <ArrowUpRight size={19} className="text-white/60 group-hover:text-[#71D99A]" />
+                </a>
+              </div>
+
+              <div className="flex items-center gap-3 border-t border-white/15 pt-6">
+                <Lock size={16} className="shrink-0 text-[#71D99A]" />
+                <p className="text-xs leading-5 text-white/65">
+                  Your information is only used to respond to your inquiry.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE - FORM */}
+          <div className="bg-white p-7 sm:p-10 lg:p-12">
+
+            <div className="mb-9">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#168653]">
+                CONTACT RAVEWEBS
               </p>
 
-              {/* CONTACT CHANNELS */}
-              <div className="relative mt-auto flex flex-col gap-4">
-                {channels
-                  .filter((channel) => Boolean(channel.href))
-                  .map((channel) => {
-                    const Icon = channel.icon
+              <h3 className="text-3xl font-bold tracking-tight text-[#17251C] sm:text-4xl">
+                Tell us about your project.
+              </h3>
 
-                    return (
-                      <a
-                        key={channel.key}
-                        href={channel.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={channel.label}
-                        className="group flex items-center justify-between rounded-2xl border border-line bg-surface p-4 transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:bg-app/80 hover:shadow-[0_10px_30px_-10px_rgba(34,197,94,0.2)]"
-                      >
-                        <span className="flex items-center gap-4">
-                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent transition-all duration-300 group-hover:scale-110 group-hover:bg-accent/20">
-                            <Icon size={20} aria-hidden="true" />
-                          </div>
-
-                          <div>
-                            <p className="font-display text-sm font-bold text-primary">
-                              {channel.label}
-                            </p>
-                            <p className="text-xs text-muted">
-                              {channel.sub}
-                            </p>
-                          </div>
-                        </span>
-
-                        <svg
-                          className="h-4 w-4 text-muted transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          aria-hidden="true"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </a>
-                    )
-                  })}
-              </div>
+              <p className="mt-3 text-sm leading-6 text-[#68766D]">
+                Fill in the details below and our team will get back to you.
+              </p>
             </div>
-          </motion.div>
 
-          {/* RIGHT SIDE - FORM (Premium Glass Card) */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-            className="lg:col-span-7"
-          >
-            <div className="relative flex h-full flex-col overflow-hidden rounded-2rem border border-line bg-app/70 p-5 shadow-2xl shadow-accent/5 backdrop-blur-3xl md:p-10">
+            <form onSubmit={handleSubmit} className="space-y-6">
 
-              {/* Top Gradient Line */}
-              <div
-                aria-hidden="true"
-                className="absolute left-0 right-0 top-0 h-0.5 bg-linear-to-r from-transparent via-accent/40 to-transparent"
-              />
-
-              {/* FORM HEADER */}
-              <div className="mb-8 flex items-center gap-4 md:mb-10">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accent/15 text-accent shadow-[0_0_20px_rgba(34,197,94,0.2)]">
-                  <MessageCircle size={24} className="fill-current" aria-hidden="true" />
-                </div>
-
-                <div>
-                  <h3 className="font-display text-xl font-bold text-primary">
-                    Send us a message
-                  </h3>
-                  <p className="text-sm text-muted">
-                    Fill the form below and let's get started
-                  </p>
+              {/* NAME */}
+              <div>
+                <label htmlFor="name" className={labelClass}>
+                  Your name
+                </label>
+                <div className="relative">
+                  <User
+                    size={18}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[#87958B]"
+                  />
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="John Smith"
+                    className={`${inputClass} pl-11`}
+                  />
                 </div>
               </div>
 
-              {/* CONTACT FORM */}
-              <form onSubmit={handleSubmit} className="flex flex-col gap-5 md:gap-6">
-
-                {/* NAME + EMAIL */}
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6">
-
-                  {/* NAME */}
-                  <div className="group relative">
-                    <label htmlFor="contact-name" className="mb-2 block text-sm font-medium text-secondary">
-                      Name
-                    </label>
-                    <div className="relative">
-                      <User size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent" aria-hidden="true" />
-                      <input
-                        id="contact-name"
-                        type="text"
-                        name="name"
-                        placeholder="Your full name"
-                        value={form.name}
-                        onChange={handleChange}
-                        required
-                        autoComplete="name"
-                        className="w-full rounded-xl border border-line bg-surface py-4 pl-11 pr-4 text-sm text-primary placeholder:text-muted/60 transition-all duration-300 hover:border-accent/30 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 focus:shadow-[0_0_0_4px_rgba(34,197,94,0.05)]"
-                      />
-                    </div>
-                  </div>
-
-                  {/* EMAIL */}
-                  <div className="group relative">
-                    <label htmlFor="contact-email" className="mb-2 block text-sm font-medium text-secondary">
-                      Email
-                    </label>
-                    <div className="relative">
-                      <Mail size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent" aria-hidden="true" />
-                      <input
-                        id="contact-email"
-                        type="email"
-                        name="email"
-                        placeholder="your.email@example.com"
-                        value={form.email}
-                        onChange={handleChange}
-                        required
-                        autoComplete="email"
-                        className="w-full rounded-xl border border-line bg-surface py-4 pl-11 pr-4 text-sm text-primary placeholder:text-muted/60 transition-all duration-300 hover:border-accent/30 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 focus:shadow-[0_0_0_4px_rgba(34,197,94,0.05)]"
-                      />
-                    </div>
-                  </div>
+              {/* EMAIL */}
+              <div>
+                <label htmlFor="email" className={labelClass}>
+                  Email address
+                </label>
+                <div className="relative">
+                  <Mail
+                    size={18}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[#87958B]"
+                  />
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="john@company.com"
+                    className={`${inputClass} pl-11`}
+                  />
                 </div>
+              </div>
 
-                {/* PHONE NUMBER */}
-                <div className="group relative">
-                  <label
-                    htmlFor="contact-phone"
-                    className="mb-2 block text-sm font-medium text-secondary"
+              {/* PHONE */}
+              <div>
+                <label htmlFor="contact-phone" className={labelClass}>
+                  Phone number
+                </label>
+
+                <div className="contact-phone-input">
+                  <IntlTelInput
+                    value={phone}
+                    onChangeNumber={setPhone}
+                    initialCountry="in"
+                    separateDialCode={true}
+                    countrySearch={true}
+                    formatAsYouType={true}
+                    loadUtils={() => import("intl-tel-input/utils")}
+                    inputProps={{
+                      id: "contact-phone",
+                      name: "phone",
+                      placeholder: "Enter your phone number",
+                      required: true,
+                      className: "contact-phone-field",
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* SERVICE */}
+              <div>
+                <label htmlFor="build" className={labelClass}>
+                  What are you looking for?
+                </label>
+                <div className="relative">
+                  <Box
+                    size={18}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[#87958B]"
+                  />
+                  <select
+                    id="build"
+                    name="build"
+                    required
+                    value={formData.build}
+                    onChange={handleChange}
+                    className={`${inputClass} appearance-none pl-11`}
                   >
-                    Ph Number
-                  </label>
-
-                  <div className="relative w-full">
-                    <IntlTelInput
-                      value={form.phone}
-                      onChangeNumber={(phone) =>
-                        setForm((prev) => ({
-                          ...prev,
-                          phone,
-                        }))
-                      }
-                      initialCountry="in"
-                      separateDialCode
-                      countrySearch
-                      countrySelectorMode="AUTO"
-                      formatAsYouType
-                      loadUtils={() => import('intl-tel-input/utils')}
-                      inputProps={{
-                        id: 'contact-phone',
-                        name: 'phone',
-                        autoComplete: 'tel',
-                        placeholder: 'Your phone number',
-                        required: true,
-                      }}
-                      classNames={{
-                        container: 'w-full',
-                        input:
-                          'w-full rounded-xl border border-line bg-surface py-4 pr-4 text-sm text-primary placeholder:text-muted/60 transition-all duration-300 hover:border-accent/30 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 focus:shadow-[0_0_0_4px_rgba(34,197,94,0.05)]',
-                        countryContainer:
-                          'rounded-l-xl border-line bg-surface',
-                        selectedCountry:
-                          'rounded-l-xl border-line bg-surface',
-                        selectedCountryPrimary:
-                          'rounded-l-xl bg-surface hover:bg-accent/5',
-                        selectedDialCode:
-                          'text-sm text-primary',
-                        countrySelector:
-                          'rounded-xl border border-line bg-surface shadow-2xl',
-                        searchInput:
-                          'rounded-lg border border-line bg-surface text-primary',
-                        countryListItem:
-                          'text-sm text-primary hover:bg-accent/10',
-                        countryName:
-                          'text-primary',
-                        dialCode:
-                          'text-muted',
-                      }}
-                    />
-                  </div>
+                    <option value="" disabled>
+                      Select a service
+                    </option>
+                    <option value="Website Design & Development">
+                      Website Design & Development
+                    </option>
+                    <option value="AI Lead Management System">
+                      AI Lead Management System
+                    </option>
+                    <option value="AI Calling Agent">
+                      AI Calling Agent
+                    </option>
+                    <option value="AI WhatsApp Agent">
+                      AI WhatsApp Agent
+                    </option>
+                    <option value="AI Ads & UGC Ads">
+                      AI Ads & UGC Ads
+                    </option>
+                    <option value="AI Automation">
+                      AI Automation
+                    </option>
+                    <option value="CRM Solutions">
+                      CRM Solutions
+                    </option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
+              </div>
 
-                {/* MESSAGE */}
-                <div className="group relative">
-                  <label htmlFor="contact-message" className="mb-2 block text-sm font-medium text-secondary">
-                    Message
-                  </label>
-                  <div className="relative">
-                    <PenLine size={16} className="pointer-events-none absolute left-4 top-4 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent" aria-hidden="true" />
-                    <textarea
-                      id="contact-message"
-                      name="message"
-                      placeholder="Tell us about your project..."
-                      value={form.message}
-                      onChange={handleChange}
-                      required
-                      rows={4}
-                      className="w-full resize-none rounded-xl border border-line bg-surface py-4 pl-11 pr-4 text-sm text-primary placeholder:text-muted/60 transition-all duration-300 hover:border-accent/30 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 focus:shadow-[0_0_0_4px_rgba(34,197,94,0.05)]"
-                    />
-                  </div>
+              {/* MESSAGE */}
+              <div>
+                <label htmlFor="message" className={labelClass}>
+                  Tell us more about it
+                </label>
+                <div className="relative">
+                  <PenLine
+                    size={18}
+                    className="absolute left-4 top-4 text-[#87958B]"
+                  />
+                  <textarea
+                    id="message"
+                    name="message"
+                    required
+                    rows={4}
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Tell us about your goals, requirements, or challenges..."
+                    className={`${inputClass} resize-none pl-11`}
+                  />
                 </div>
+              </div>
 
-                {/* WHAT YOU WANT TO BUILD */}
-                <div className="group relative">
-                  <label htmlFor="contact-build" className="mb-2 block text-sm font-medium text-secondary">
-                    What You Want to Build{' '}
-                    <span className="text-muted">(Optional)</span>
-                  </label>
-                  <div className="relative">
-                    <Box size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted transition-all duration-200 group-focus-within:scale-110 group-focus-within:text-accent" aria-hidden="true" />
-                    <input
-                      id="contact-build"
-                      type="text"
-                      name="build"
-                      placeholder="Describe the product, feature or idea..."
-                      value={form.build}
-                      onChange={handleChange}
-                      className="w-full rounded-xl border border-line bg-surface py-4 pl-11 pr-4 text-sm text-primary placeholder:text-muted/60 transition-all duration-300 hover:border-accent/30 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 focus:shadow-[0_0_0_4px_rgba(34,197,94,0.05)]"
-                    />
-                  </div>
-                </div>
-
-                {/* SUBMIT BUTTON */}
-                <button
-                  type="submit"
-                  className="group mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-accent to-emerald-400 py-4 text-sm font-bold uppercase tracking-wide text-black transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_15px_40px_-10px_rgba(34,197,94,0.6)] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-app"
+              {/* STATUS */}
+              {status && (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className={`flex items-start gap-3 rounded-xl border p-4 ${
+                    status.type === "success"
+                      ? "border-[#B8E5C8] bg-[#F0FAF3] text-[#176B3B]"
+                      : "border-[#F1C4C4] bg-[#FFF4F4] text-[#B42318]"
+                  }`}
                 >
-                  Send Message
-                  <Send size={16} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" aria-hidden="true" />
-                </button>
+                  {status.type === "success" ? (
+                    <CheckCircle2 size={19} className="mt-0.5 shrink-0" />
+                  ) : (
+                    <span className="mt-0.5 font-bold">!</span>
+                  )}
+                  <p className="text-sm leading-6">{status.message}</p>
+                </div>
+              )}
 
-                {/* PRIVACY NOTE */}
-                <p className="mt-4 flex items-center justify-center gap-2 text-center text-xs text-muted">
-                  <Lock size={12} className="text-accent" aria-hidden="true" />
-                  Your data is safe with us. We never share your information.
-                </p>
-              </form>
-            </div>
-          </motion.div>
+              {/* SUBMIT */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#147D4A] px-6 py-4 text-sm font-bold text-white shadow-[0_8px_20px_rgba(20,125,74,0.16)] transition hover:bg-[#10673D] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isSubmitting ? (
+                  <>
+                    <LoaderCircle size={18} className="animate-spin" />
+                    Sending your message...
+                  </>
+                ) : (
+                  <>
+                    Send your inquiry
+                    <Send size={17} />
+                  </>
+                )}
+              </button>
+
+              <p className="text-center text-xs leading-5 text-[#89958D]">
+                By submitting this form, you agree to be contacted by RaveWebs
+                regarding your inquiry.
+              </p>
+            </form>
+          </div>
         </div>
       </div>
+
+      {/* PHONE INPUT STYLES */}
+      <style>{`
+        .contact-phone-input .iti {
+          width: 100%;
+        }
+
+        .contact-phone-input .iti input {
+          width: 100%;
+          min-height: 50px;
+          border: 1px solid #DDE5DF;
+          border-radius: 12px;
+          background: #FFFFFF;
+          padding-top: 12px;
+          padding-bottom: 12px;
+          padding-right: 14px;
+          color: #17251C;
+          font-size: 14px;
+          outline: none;
+        }
+
+        .contact-phone-input .iti input:focus {
+          border-color: #168653;
+          box-shadow: 0 0 0 2px rgba(22, 134, 83, 0.1);
+        }
+
+        .contact-phone-input .iti__selected-country {
+          border-radius: 10px 0 0 10px;
+          background: #FFFFFF;
+        }
+
+        .contact-phone-input .iti__selected-dial-code {
+          color: #26372C;
+          font-size: 14px;
+        }
+
+        .contact-phone-input .iti__country-list {
+          z-index: 50;
+          border: 1px solid #DDE5DF;
+          border-radius: 12px;
+          color: #17251C;
+        }
+
+        .contact-phone-input .iti__search-input {
+          color: #17251C;
+        }
+      `}</style>
     </section>
-  )
+  );
 }

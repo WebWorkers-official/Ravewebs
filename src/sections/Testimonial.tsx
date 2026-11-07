@@ -1,7 +1,7 @@
+
 import { motion } from 'framer-motion'
-import { Star, ArrowLeft, ArrowRight } from 'lucide-react'
-import { SectionHeading } from '@/components/SectionHeading'
-import { useRef, useState, useEffect } from 'react'
+import { Star, ArrowLeft, ArrowRight, Quote } from 'lucide-react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 
 const testimonials = [
   {
@@ -88,25 +88,21 @@ const testimonials = [
 
 export function Testimonials() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
-
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(true)
 
-  const checkScrollPosition = () => {
+  const checkScrollPosition = useCallback(() => {
     const container = scrollContainerRef.current
-
     if (!container) return
 
-    const maxScroll =
-      container.scrollWidth - container.clientWidth
+    const maxScroll = container.scrollWidth - container.clientWidth
 
     setCanScrollLeft(container.scrollLeft > 5)
     setCanScrollRight(container.scrollLeft < maxScroll - 5)
-  }
+  }, [])
 
   useEffect(() => {
     const container = scrollContainerRef.current
-
     if (!container) return
 
     checkScrollPosition()
@@ -114,31 +110,19 @@ export function Testimonials() {
     window.addEventListener('resize', checkScrollPosition)
 
     return () => {
-      window.removeEventListener(
-        'resize',
-        checkScrollPosition
-      )
+      window.removeEventListener('resize', checkScrollPosition)
     }
-  }, [])
+  }, [checkScrollPosition])
 
-  const scrollNext = () => {
+  const scroll = (direction: 'left' | 'right') => {
     const container = scrollContainerRef.current
-
     if (!container) return
 
     container.scrollBy({
-      left: container.clientWidth,
-      behavior: 'smooth',
-    })
-  }
-
-  const scrollPrevious = () => {
-    const container = scrollContainerRef.current
-
-    if (!container) return
-
-    container.scrollBy({
-      left: -container.clientWidth,
+      left:
+        direction === 'right'
+          ? container.clientWidth * 0.85
+          : -container.clientWidth * 0.85,
       behavior: 'smooth',
     })
   }
@@ -146,336 +130,126 @@ export function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="relative overflow-hidden py-16 md:py-24"
+      className="overflow-hidden bg-[#FAFBFA] py-20 md:py-28"
     >
-      {/* Background Glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10"
-      >
-        <div className="absolute left-1/2 top-1/2 h-[300px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/[0.06] blur-[100px]" />
-      </div>
-
       <div className="container-ww">
+        {/* Section heading */}
+        <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
+          <div className="max-w-2xl">
+            <p className="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-[#168653]">
+              Customer stories
+            </p>
 
-        {/* Section Heading */}
-        <SectionHeading
-          eyebrow="Testimonials"
-          heading="Trusted by teams that live on leads."
-          subheading="Real feedback from sales teams and founders who replaced scattered tools with one centralized lead management system."
-        />
+            <h2 className="text-3xl font-bold leading-tight tracking-tight text-[#14251A] sm:text-4xl md:text-5xl">
+              Better lead management.
+              <span className="block text-[#168653]">
+                Better business outcomes.
+              </span>
+            </h2>
 
-        {/* Carousel */}
-        <div className="relative mt-10 md:mt-14">
+            <p className="mt-5 max-w-xl text-base leading-7 text-[#46534A]">
+              See how a more organized approach to managing leads can make a
+              difference to everyday business operations.
+            </p>
+          </div>
 
-          {/* LEFT ARROW */}
-          {canScrollLeft && (
+          {/* Carousel controls */}
+          <div className="flex shrink-0 items-center gap-3">
             <button
               type="button"
-              onClick={scrollPrevious}
+              onClick={() => scroll('left')}
+              disabled={!canScrollLeft}
               aria-label="Previous testimonials"
-              className="
-                absolute
-                left-1
-                top-1/2
-                z-20
-                flex
-                h-10
-                w-10
-                -translate-y-1/2
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-line
-                bg-surface
-                text-primary
-                shadow-lg
-                transition-all
-                duration-300
-                hover:border-accent
-                hover:bg-accent
-                hover:text-black
-                md:-left-5
-                md:h-11
-                md:w-11
-              "
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-[#D8E2DA] bg-white text-[#17251B] transition-all duration-200 hover:border-[#168653] hover:text-[#168653] disabled:cursor-not-allowed disabled:opacity-30"
             >
-              <ArrowLeft size={17} />
+              <ArrowLeft size={18} />
             </button>
-          )}
 
-          {/* RIGHT ARROW */}
-          {canScrollRight && (
             <button
               type="button"
-              onClick={scrollNext}
+              onClick={() => scroll('right')}
+              disabled={!canScrollRight}
               aria-label="Next testimonials"
-              className="
-                absolute
-                right-1
-                top-1/2
-                z-20
-                flex
-                h-10
-                w-10
-                -translate-y-1/2
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-line
-                bg-surface
-                text-primary
-                shadow-lg
-                transition-all
-                duration-300
-                hover:border-accent
-                hover:bg-accent
-                hover:text-black
-                md:-right-5
-                md:h-11
-                md:w-11
-              "
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-[#D8E2DA] bg-white text-[#17251B] transition-all duration-200 hover:border-[#168653] hover:text-[#168653] disabled:cursor-not-allowed disabled:opacity-30"
             >
-              <ArrowRight size={17} />
+              <ArrowRight size={18} />
             </button>
-          )}
+          </div>
+        </div>
 
-          {/* Horizontal Scroll */}
-          <div
-            ref={scrollContainerRef}
-            onScroll={checkScrollPosition}
-            className="
-              flex
-              gap-4
-              overflow-x-auto
-              scroll-smooth
-              snap-x
-              snap-mandatory
-              px-1
-              pb-4
-              md:gap-6
-            "
-            style={{
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-            }}
-          >
-            {testimonials.map((t, i) => (
-              <motion.article
-                key={t.id}
-                initial={{
-                  opacity: 0,
-                  y: 15,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                viewport={{
-                  once: true,
-                  margin: '-40px',
-                }}
-                transition={{
-                  duration: 0.4,
-                  delay: (i % 3) * 0.06,
-                }}
-                className="
-                  group
-                  relative
-                  flex
-                  shrink-0
-                  snap-start
-                  flex-col
-                  rounded-2xl
-                  border
-                  border-line
-                  bg-surface
-                  p-5
-                  transition-all
-                  duration-300
-
-                  w-[88%]
-
-                  sm:w-[calc((100%-16px)/2)]
-
-                  lg:w-[calc((100%-48px)/3)]
-
-                  hover:-translate-y-1
-                  hover:border-accent/30
-                  hover:shadow-[0_18px_40px_-20px_rgba(34,197,94,0.25)]
-
-                  md:p-6
-                "
-              >
-
-                {/* Accent Line */}
-                <div
-                  className="
-                    absolute
-                    left-5
-                    top-0
-                    h-[2px]
-                    w-10
-                    rounded-full
-                    bg-accent
-                    opacity-0
-                    transition-all
-                    duration-300
-                    group-hover:w-16
-                    group-hover:opacity-100
-                  "
-                />
-
-                {/* Stars */}
-                <div className="mb-4 flex gap-0.5">
-                  {Array.from({ length: 5 }).map((_, index) => (
+        {/* Testimonials carousel */}
+        <div
+          ref={scrollContainerRef}
+          onScroll={checkScrollPosition}
+          className="mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-5 md:mt-16 md:gap-6"
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
+        >
+          {testimonials.map((testimonial, index) => (
+            <motion.article
+              key={testimonial.id}
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.45, delay: (index % 3) * 0.07 }}
+              className="flex w-[88%] shrink-0 snap-start flex-col rounded-2xl border border-[#E1E8E2] bg-white p-6 transition-all duration-300 hover:border-[#B8D8C4] hover:shadow-[0_12px_35px_-20px_rgba(20,60,35,0.2)] sm:w-[calc((100%-20px)/2)] lg:w-[calc((100%-48px)/3)] md:p-7"
+            >
+              {/* Rating */}
+              <div className="flex items-center justify-between">
+                <div className="flex gap-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
                     <Star
-                      key={index}
-                      size={13}
-                      className="fill-accent text-accent"
+                      key={i}
+                      size={15}
+                      className="fill-[#168653] text-[#168653]"
                     />
                   ))}
                 </div>
 
-                {/* Quote */}
-                <p
-                  className="
-                    flex-1
-                    text-[14px]
-                    leading-[1.65]
-                    text-secondary
-                  "
-                >
-                  "{t.quote}"
-                </p>
+                <Quote
+                  size={25}
+                  strokeWidth={1.5}
+                  className="text-[#B8DCC6]"
+                />
+              </div>
 
-                {/* Metric */}
-                <div
-                  className="
-                    mt-5
-                    inline-flex
-                    w-fit
-                    items-center
-                    rounded-full
-                    border
-                    border-accent/20
-                    bg-accent/[0.06]
-                    px-3
-                    py-1.5
-                  "
-                >
-                  <span
-                    className="
-                      font-mono
-                      text-[10px]
-                      font-medium
-                      tracking-wide
-                      text-accent
-                    "
-                  >
-                    {t.metric}
-                  </span>
+              {/* Quote */}
+              <p className="mt-7 flex-1 text-[15px] font-medium leading-7 text-[#344239]">
+                “{testimonial.quote}”
+              </p>
+
+              {/* Result */}
+              <div className="mt-7 inline-flex w-fit items-center rounded-lg bg-[#EAF5EE] px-3 py-2">
+                <span className="text-sm font-bold text-[#087A45]">
+                  {testimonial.metric}
+                </span>
+              </div>
+
+              {/* Customer information */}
+              <div className="mt-7 flex items-center gap-3 border-t border-[#E8EDE9] pt-5">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#E8F5ED] text-sm font-bold text-[#087A45]">
+                  {testimonial.initials}
                 </div>
 
-                {/* Author */}
-                <div
-                  className="
-                    mt-5
-                    flex
-                    items-center
-                    gap-3
-                    border-t
-                    border-line
-                    pt-4
-                  "
-                >
-                  <div
-                    className="
-                      flex
-                      h-9
-                      w-9
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-accent/10
-                      font-display
-                      text-xs
-                      font-bold
-                      text-accent
-                    "
-                  >
-                    {t.initials}
-                  </div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-bold text-[#17251B]">
+                    {testimonial.name}
+                  </p>
 
-                  <div className="min-w-0">
-                    <p
-                      className="
-                        truncate
-                        font-display
-                        text-sm
-                        font-semibold
-                        text-primary
-                      "
-                    >
-                      {t.name}
-                    </p>
-
-                    <p
-                      className="
-                        mt-0.5
-                        truncate
-                        text-[11px]
-                        text-muted
-                      "
-                    >
-                      {t.role} · {t.company}
-                    </p>
-                  </div>
+                  <p className="mt-1 truncate text-xs font-medium text-[#59665D]">
+                    {testimonial.role} · {testimonial.company}
+                  </p>
                 </div>
-              </motion.article>
-            ))}
-          </div>
-
-          {/* Right Fade */}
-          {canScrollRight && (
-            <div
-              className="
-                pointer-events-none
-                absolute
-                right-0
-                top-0
-                bottom-4
-                w-10
-                bg-gradient-to-l
-                from-app
-                to-transparent
-                md:w-16
-              "
-            />
-          )}
-
-          {/* Left Fade */}
-          {canScrollLeft && (
-            <div
-              className="
-                pointer-events-none
-                absolute
-                left-0
-                top-0
-                bottom-4
-                w-10
-                bg-gradient-to-r
-                from-app
-                to-transparent
-                md:w-16
-              "
-            />
-          )}
+              </div>
+            </motion.article>
+          ))}
         </div>
 
+        <p className="mt-3 text-xs font-medium text-[#69766D]">
+          Swipe or use the arrows to explore more stories.
+        </p>
       </div>
     </section>
   )
